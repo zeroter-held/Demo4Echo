@@ -11,6 +11,7 @@ __pycache__/
 .env
 .env.*
 !.env.example
+AIChat_demo/Server/start_server.bat
 
 # CMake/build outputs
 build/
