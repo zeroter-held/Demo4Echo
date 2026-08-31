@@ -1,6 +1,7 @@
 #include "ui_FocusPage.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #define DEFAULT_WORK_SECONDS (25 * 60)
 #define BREAK_SECONDS (5 * 60)
@@ -83,6 +84,11 @@ static void focus_update_view(void)
     lv_label_set_text(focus_count_label, text);
 }
 
+static void focus_play_done_sound(void)
+{
+    system("aplay /root/bin/third_party/audio/focus_done.wav > /dev/null 2>&1 &");
+}
+
 static void focus_timer_cb(lv_timer_t *timer)
 {
     (void)timer;
@@ -111,6 +117,7 @@ static void focus_timer_cb(lv_timer_t *timer)
             focus_save_count();
             ui_msgbox_info("专注完成", "本轮专注完成，休息5分钟");
         }
+        focus_play_done_sound();
     }
 
     focus_update_view();
