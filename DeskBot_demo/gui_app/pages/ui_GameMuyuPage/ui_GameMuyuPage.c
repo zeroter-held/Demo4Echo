@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "ui_GameMuyuPage.h"
+#include "../../../common/utils/audio_helper.h"
 
 ///////////////////// VARIABLES ////////////////////
 
@@ -57,9 +58,8 @@ static void ui_event_click(lv_event_t * e)
     lv_obj_t * obj = lv_event_get_target(e);
     if(event_code == LV_EVENT_CLICKED) {
         _Click_Animation();
-        // play wooden-fish knock sound: kill previous aplay first (single ALSA subdevice),
-        // run in background so the UI thread is not blocked
-        system("(killall aplay 2>/dev/null; aplay /root/bin/third_party/audio/muyu_knock.wav) >/dev/null 2>&1 &");
+        // play wooden-fish knock sound (async, uses vfork+exec to avoid fork/alloc issue in main)
+        audio_play_wav_async("/root/bin/third_party/audio/muyu_knock.wav");
         ui_muyu_para.tolal_clicks++;
         char clicks_str[18];
         sprintf(clicks_str, "今日功德 %4d", ui_muyu_para.tolal_clicks);

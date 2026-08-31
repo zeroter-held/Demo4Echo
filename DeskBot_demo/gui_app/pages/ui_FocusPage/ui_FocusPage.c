@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "../../../common/utils/audio_helper.h"
 
 #define DEFAULT_WORK_SECONDS (25 * 60)
 #define BREAK_SECONDS (5 * 60)
@@ -86,7 +87,7 @@ static void focus_update_view(void)
 
 static void focus_play_done_sound(void)
 {
-    system("aplay /root/bin/third_party/audio/focus_done.wav > /dev/null 2>&1 &");
+    audio_play_wav_async("/root/bin/third_party/audio/focus_done.wav");
 }
 
 static void focus_timer_cb(lv_timer_t *timer)
