@@ -2,7 +2,7 @@
 
 ///////////////////// VARIABLES ////////////////////
 
-#define _APP_CONTAINER_MAX_PAGES 2
+#define _APP_CONTAINER_MAX_PAGES 3
 
 ui_desktop_data_t ui_desktop_data = {
     .witdh = 320,
@@ -735,6 +735,40 @@ void ui_HomePage_init(void)
     lv_obj_set_style_text_font(ui_CalculatorIcon, &ui_font_iconfont48, LV_PART_MAIN | LV_STATE_DEFAULT);
     // event
     lv_obj_add_event_cb(ui_CalculatorBtn, ui_event_AppsBtn, LV_EVENT_CLICKED, "CalculatorPage");
+
+    // focus app (third desktop page)
+    lv_obj_t * ui_FocusBtn = lv_button_create(ui_AppIconContainer);
+    lv_obj_set_width(ui_FocusBtn, 70);
+    lv_obj_set_height(ui_FocusBtn, 70);
+    lv_obj_set_x(ui_FocusBtn, 655);
+    lv_obj_set_y(ui_FocusBtn, -45);
+    lv_obj_set_align(ui_FocusBtn, LV_ALIGN_LEFT_MID);
+    lv_obj_add_flag(ui_FocusBtn, LV_OBJ_FLAG_SCROLL_ON_FOCUS);     /// Flags
+    lv_obj_remove_flag(ui_FocusBtn, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_set_style_radius(ui_FocusBtn, 15, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui_FocusBtn, lv_color_hex(0x2CB67D), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_FocusBtn, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // tomato icon: red body + green stem
+    lv_obj_t * ui_tomato_body = lv_obj_create(ui_FocusBtn);
+    lv_obj_set_size(ui_tomato_body, 36, 34);
+    lv_obj_set_style_radius(ui_tomato_body, 18, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui_tomato_body, lv_color_hex(0xE74C3C), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_tomato_body, LV_OPA_COVER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui_tomato_body, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_align(ui_tomato_body, LV_ALIGN_CENTER, 0, 4);
+    lv_obj_remove_flag(ui_tomato_body, LV_OBJ_FLAG_SCROLLABLE);
+
+    lv_obj_t * ui_tomato_stem = lv_obj_create(ui_FocusBtn);
+    lv_obj_set_size(ui_tomato_stem, 8, 10);
+    lv_obj_set_style_radius(ui_tomato_stem, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui_tomato_stem, lv_color_hex(0x27AE60), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_tomato_stem, LV_OPA_COVER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui_tomato_stem, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_align(ui_tomato_stem, LV_ALIGN_CENTER, 0, -16);
+    lv_obj_remove_flag(ui_tomato_stem, LV_OBJ_FLAG_SCROLLABLE);
+    // event
+    lv_obj_add_event_cb(ui_FocusBtn, ui_event_AppsBtn, LV_EVENT_CLICKED, "FocusPage");
 
     // timer
     ui_home_timer = lv_timer_create(ui_home_timer_cb, 5000, ui_TimeLabel);

@@ -41,6 +41,7 @@ LV_FONT_DECLARE(ui_font_iconfont44);
 LV_FONT_DECLARE(ui_font_iconfont48);
 LV_FONT_DECLARE(ui_font_heiti14);
 LV_FONT_DECLARE(ui_font_heiti22);
+LV_FONT_DECLARE(ui_font_focus22);
 LV_FONT_DECLARE(ui_font_heiti24);
 LV_FONT_DECLARE(ui_font_shuhei22);
 LV_FONT_DECLARE(ui_font_NuberBig90);
