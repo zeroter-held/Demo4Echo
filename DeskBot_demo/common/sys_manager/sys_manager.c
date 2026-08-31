@@ -394,7 +394,8 @@ size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
     size_t realsize = size * nmemb;
     char** response_string = (char**)userp;
 
-    char* new_string = realloc(*response_string, realsize + 1);
+    size_t old_len = strlen(*response_string);
+    char* new_string = realloc(*response_string, old_len + realsize + 1);
     if(new_string == NULL) {
         // 内存分配失败
         fprintf(stderr, "Failed to allocate memory\n");
@@ -402,8 +403,8 @@ size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
     }
 
     *response_string = new_string;
-    memcpy(*response_string + strlen(*response_string), contents, realsize);
-    (*response_string)[realsize] = '\0';
+    memcpy(*response_string + old_len, contents, realsize);
+    (*response_string)[old_len + realsize] = '\0';
 
     return realsize;
 }
