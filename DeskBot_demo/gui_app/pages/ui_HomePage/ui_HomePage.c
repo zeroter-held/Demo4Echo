@@ -206,6 +206,12 @@ void ui_HomePage_init(void)
     lv_obj_t * ui_HomeScreen = lv_obj_create(NULL);
     lv_obj_remove_flag(ui_HomeScreen, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
 
+    // wallpaper background: created first so it stays at the bottom layer
+    lv_obj_t * ui_HomeBg = lv_img_create(ui_HomeScreen);
+    lv_img_set_src(ui_HomeBg, &ui_img_homebg);
+    lv_obj_set_pos(ui_HomeBg, 0, 0);
+    lv_obj_remove_flag(ui_HomeBg, LV_OBJ_FLAG_SCROLLABLE);
+
     // apps‘ container, to contain all apps btns
     lv_obj_t * ui_AppIconContainer = lv_obj_create(ui_HomeScreen);
     lv_obj_set_width(ui_AppIconContainer, ui_desktop_data.witdh * ui_desktop_data.container_total_pages);
@@ -229,6 +235,7 @@ void ui_HomePage_init(void)
     lv_obj_set_align(ui_TimeLabel, LV_ALIGN_TOP_MID);
     lv_label_set_text(ui_TimeLabel, "11:59");
     lv_obj_set_style_text_font(ui_TimeLabel, &lv_font_montserrat_22, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui_TimeLabel, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
     char time_str[6];
     sprintf(time_str, "%02d:%02d", ui_system_para.hour, ui_system_para.minute);
     lv_label_set_text(ui_TimeLabel, time_str);
@@ -242,6 +249,7 @@ void ui_HomePage_init(void)
     lv_obj_set_align(ui_WifiLabel, LV_ALIGN_TOP_MID);
     lv_label_set_text(ui_WifiLabel, "");
     lv_obj_set_style_text_font(ui_WifiLabel, &ui_font_iconfont26, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui_WifiLabel, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // wifi not connected Label
     ui_NoWifiLabel = lv_label_create(ui_HomeScreen);
@@ -252,6 +260,7 @@ void ui_HomePage_init(void)
     lv_obj_set_align(ui_NoWifiLabel, LV_ALIGN_TOP_MID);
     lv_label_set_text(ui_NoWifiLabel, "");
     lv_obj_set_style_text_font(ui_NoWifiLabel, &ui_font_iconfont26, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui_NoWifiLabel, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
     if(ui_system_para.wifi_connected == true)
     {
         lv_obj_remove_flag(ui_WifiLabel, LV_OBJ_FLAG_HIDDEN);     /// Flags
