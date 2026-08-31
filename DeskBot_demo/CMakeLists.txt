@@ -144,6 +144,17 @@ if(TARGET_ARM)
         "${AI_CAMERA_PATH}/cpp/3rdparty/rknpu2/Linux/armhf-uclibc/librknnmrt.so"
     )
 
+    set(RUNTIME_LIBS
+        "${CMAKE_SYSROOT}/usr/lib/libdrm.so.2.134.0|libdrm.so.2"
+        "${CMAKE_SYSROOT}/usr/lib/libjson-c.so.5.3.0|libjson-c.so.5"
+        "${CMAKE_SYSROOT}/usr/lib/libcurl.so.4.8.0|libcurl.so.4"
+        "${CMAKE_SYSROOT}/usr/lib/libssl.so.3|libssl.so.3"
+        "${CMAKE_SYSROOT}/usr/lib/libcrypto.so.3|libcrypto.so.3"
+        "${CMAKE_SYSROOT}/usr/lib/libasound.so.2.0.0|libasound.so.2"
+        "${CMAKE_SYSROOT}/usr/lib/libportaudio.so.2.0.0|libportaudio.so.2"
+        "${CMAKE_SYSROOT}/usr/lib/libjsoncpp.so.1.9.6|libjsoncpp.so.26"
+    )
+
     # 创建目标目录
     add_custom_command(
         TARGET main POST_BUILD
@@ -162,6 +173,19 @@ if(TARGET_ARM)
             COMMENT "Copying ${FILE_NAME} to executable output directory"
         )
     endforeach()
+
+    foreach(LIB_MAPPING ${RUNTIME_LIBS})
+        string(REPLACE "|" ";" LIB_MAPPING_PARTS "${LIB_MAPPING}")
+        list(GET LIB_MAPPING_PARTS 0 LIB_SOURCE)
+        list(GET LIB_MAPPING_PARTS 1 LIB_NAME)
+        add_custom_command(
+            TARGET main POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    ${LIB_SOURCE}
+                    ${OUTPUT_PATH}/lib/${LIB_NAME}
+            COMMENT "Copying ${LIB_NAME} to executable output directory"
+        )
+    endforeach()
     # 设置运行时 rpath，以便可执行文件能够在运行时找到指定目录下的共享库
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath,\$ORIGIN/lib")
 
@@ -170,6 +194,8 @@ endif()
 # 使用 set_target_properties 设置 main 的输出目录
 set_target_properties(main PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_PATH}"
+    BUILD_WITH_INSTALL_RPATH TRUE
+    INSTALL_RPATH "\$ORIGIN/lib"
 )
 
 # Custom command to clean up generated files

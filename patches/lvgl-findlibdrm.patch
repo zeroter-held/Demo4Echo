@@ -1,0 +1,20 @@
+diff --git a/tests/FindLibDRM.cmake b/tests/FindLibDRM.cmake
+index 5599eee..2f9e753 100644
+--- a/tests/FindLibDRM.cmake
++++ b/tests/FindLibDRM.cmake
+@@ -1,5 +1,5 @@
+ find_package(PkgConfig)
+-pkg_check_modules(PKG_Libdrm pkg_check_modules libdrm)
++pkg_check_modules(PKG_Libdrm libdrm)
+ 
+ set(Libdrm_DEFINITIONS ${PKG_Libdrm_CFLAGS_OTHER})
+ set(Libdrm_VERSION ${PKG_Libdrm_VERSION})
+@@ -33,8 +33,7 @@ if(Libdrm_FOUND AND NOT TARGET Libdrm::Libdrm)
+     set_target_properties(Libdrm::Libdrm PROPERTIES
+         IMPORTED_LOCATION "${Libdrm_LIBRARY}"
+         INTERFACE_COMPILE_OPTIONS "${Libdrm_DEFINITIONS}"
+-        INTERFACE_INCLUDE_DIRECTORIES "${Libdrm_INCLUDE_DIR}"
+-        INTERFACE_INCLUDE_DIRECTORIES "${Libdrm_INCLUDE_DIR}/libdrm"
++        INTERFACE_INCLUDE_DIRECTORIES "${Libdrm_INCLUDE_DIR};${Libdrm_INCLUDE_DIR}/libdrm"
+     )
+ endif()
