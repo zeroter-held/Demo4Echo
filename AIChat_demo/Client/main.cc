@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <cstdlib>
 
 #include "Application/Application.h"
 
@@ -23,7 +24,11 @@ int main(int argc, char* argv[]) {
         std::string token = argv[3];
         // 默认值
         std::string deviceId = "00:11:22:33:44:55";
-        std::string aliyun_api_key = "sk-d8e4dc07bc01425fa83e851bc1d66b7f";
+        const char* api_key_env = std::getenv("DASHSCOPE_API_KEY");
+        if (api_key_env == nullptr || api_key_env[0] == '\0') {
+            throw std::runtime_error("DASHSCOPE_API_KEY is not set");
+        }
+        std::string aliyun_api_key = api_key_env;
         int protocolVersion = 2;
         int sample_rate = 16000;
         int channels = 1;
