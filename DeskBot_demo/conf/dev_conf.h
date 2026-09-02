@@ -5,7 +5,9 @@
 extern "C" {
 #endif
 
-#define LV_USE_SIMULATOR 0
+#ifndef LV_USE_SIMULATOR
+    #define LV_USE_SIMULATOR 0
+#endif
 
 #if LV_USE_SIMULATOR
     #define LV_USE_LINUX_FBDEV 0

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <curl/curl.h>
+#include <json-c/json.h>
 
 // 回调函数，用于处理libcurl接收到的数据
 static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {

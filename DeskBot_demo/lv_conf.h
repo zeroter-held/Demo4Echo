@@ -638,7 +638,11 @@
 
 #define LV_USE_LIST       1
 
-#define LV_USE_LOTTIE     1
+#if LV_USE_SIMULATOR
+    #define LV_USE_LOTTIE     0
+#else
+    #define LV_USE_LOTTIE     1
+#endif
 
 #define LV_USE_MENU       1
 
@@ -834,10 +838,18 @@
 
 /*Enable Vector Graphic APIs
  *Requires `LV_USE_MATRIX = 1`*/
-#define LV_USE_VECTOR_GRAPHIC  1
+#if LV_USE_SIMULATOR
+    #define LV_USE_VECTOR_GRAPHIC  0
+#else
+    #define LV_USE_VECTOR_GRAPHIC  1
+#endif
 
 /* Enable ThorVG (vector graphics library) from the src/libs folder */
-#define LV_USE_THORVG_INTERNAL 1 
+#if LV_USE_SIMULATOR
+    #define LV_USE_THORVG_INTERNAL 0
+#else
+    #define LV_USE_THORVG_INTERNAL 1
+#endif
 
 /* Enable ThorVG by assuming that its installed and linked to the project */
 #define LV_USE_THORVG_EXTERNAL 0

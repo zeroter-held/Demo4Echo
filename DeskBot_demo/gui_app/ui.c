@@ -236,8 +236,9 @@ static void _gpios_init(void)
 ///////////////////// timer //////////////////////
 
 // 1s timer
-void _maintimer_cb(void)
+void _maintimer_cb(lv_timer_t * timer)
 {
+    (void)timer;
     static uint16_t time_count2 = 299;
     time_count2++;
     // 每秒闪烁一次LED

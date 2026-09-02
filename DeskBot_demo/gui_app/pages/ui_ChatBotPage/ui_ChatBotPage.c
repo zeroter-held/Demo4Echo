@@ -79,8 +79,9 @@ static void ui_ChatBotPage_Objs_reinit(void)
 
 ///////////////////// ANIMATIONS ////////////////////
 
-static void _anim_complete_cb(void)
+static void _anim_complete_cb(lv_anim_t * animation)
 {
+    (void)animation;
     ui_chat_para.anim_complete = true;
 }
 
@@ -233,8 +234,8 @@ static int ui_ai_chat_app_init(void)
 {
     if(!CHAT_BOT_UI_TEST) 
     {
-        int errno = start_ai_chat(ui_system_para.aichat_app_info.addr, ui_system_para.aichat_app_info.port, ui_system_para.aichat_app_info.token, ui_system_para.aichat_app_info.device_id, ui_system_para.aichat_app_info.aliyun_api_key, ui_system_para.aichat_app_info.protocol_version, ui_system_para.aichat_app_info.sample_rate, ui_system_para.aichat_app_info.channels, ui_system_para.aichat_app_info.frame_duration);
-        if(errno)
+        int result_code = start_ai_chat(ui_system_para.aichat_app_info.addr, ui_system_para.aichat_app_info.port, ui_system_para.aichat_app_info.token, ui_system_para.aichat_app_info.device_id, ui_system_para.aichat_app_info.aliyun_api_key, ui_system_para.aichat_app_info.protocol_version, ui_system_para.aichat_app_info.sample_rate, ui_system_para.aichat_app_info.channels, ui_system_para.aichat_app_info.frame_duration);
+        if(result_code)
         {
             // show msg box
             ui_msgbox_info("Error", "AIChat App init failed, wait for a moment and try again.");
@@ -244,8 +245,9 @@ static int ui_ai_chat_app_init(void)
     return 0;
 }
 
-static void _ChatBotTimer_cb(void)
+static void _ChatBotTimer_cb(lv_timer_t * timer)
 {
+    (void)timer;
     if(ui_chat_para.first_enter)
     {
         ui_chat_para.first_enter = false;
@@ -323,8 +325,9 @@ static void _ChatBotTimer_cb(void)
     }
 }
 
-static void _ChatBotMoveTimer_cb(void)
+static void _ChatBotMoveTimer_cb(lv_timer_t * timer)
 {
+    (void)timer;
     if(!CHAT_BOT_UI_TEST)
         chat_bot_get_intent_process();
 }

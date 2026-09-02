@@ -47,8 +47,9 @@ static void _cloud_move_anim(void)
 
 ///////////////////// FUNCTIONS ////////////////////
 
-static void _ui_weather_timer_cb(void)
+static void _ui_weather_timer_cb(lv_timer_t * timer)
 {
+    (void)timer;
     static uint16_t time_count = 0;
     time_count++;
     // 5分钟更新一次weather info

@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.10)
 
 # Option to choose target architecture
 option(TARGET_ARM "Build for ARM architecture" OFF)
+option(TARGET_SIMULATOR "Build the LVGL desktop simulator" OFF)
+
+if(TARGET_ARM AND TARGET_SIMULATOR)
+    message(FATAL_ERROR "TARGET_ARM and TARGET_SIMULATOR cannot both be enabled")
+endif()
 
 # If building for ARM, set the toolchain file before anything else
 if(TARGET_ARM)
@@ -21,11 +26,22 @@ endif()
 
 project(DeskBot)
 
+if(TARGET_SIMULATOR)
+    add_compile_definitions(LV_USE_SIMULATOR=1)
+    set(OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin-sim)
+    set(CMAKE_PREFIX_PATH "C:/msys64/ucrt64" ${CMAKE_PREFIX_PATH})
+    set(LV_CONF_BUILD_DISABLE_THORVG_INTERNAL ON CACHE BOOL "Disable unused ThorVG in simulator" FORCE)
+    set(LV_CONF_BUILD_DISABLE_EXAMPLES ON CACHE BOOL "Disable unused LVGL examples in simulator" FORCE)
+    set(LV_CONF_BUILD_DISABLE_DEMOS ON CACHE BOOL "Disable unused LVGL demos in simulator" FORCE)
+    find_package(SDL2 CONFIG REQUIRED)
+else()
+    add_compile_definitions(LV_USE_SIMULATOR=0)
+    set(OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+endif()
+
 set(CMAKE_C_STANDARD 99)#C99 # lvgl officially support C99 and above
 set(CMAKE_CXX_STANDARD 17)#C17
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-set(OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 add_subdirectory(lvgl)          # LVGL 核心模块
 add_subdirectory(gui_app)       # GUI_APP 应用模块
@@ -50,14 +66,18 @@ target_link_libraries(
     common
 )
 
-include(${CMAKE_CURRENT_LIST_DIR}/lvgl/tests/FindLibDRM.cmake)
-include_directories(${Libdrm_INCLUDE_DIRS})
+if(TARGET_ARM)
+    include(${CMAKE_CURRENT_LIST_DIR}/lvgl/tests/FindLibDRM.cmake)
+    include_directories(${Libdrm_INCLUDE_DIRS})
+endif()
 
-find_package(SDL2)
-find_package(SDL2_image)
-include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS})
-
-target_link_libraries(main lvgl lvgl::examples lvgl::demos lvgl::thorvg ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${Libdrm_LIBRARIES} m pthread)
+if(TARGET_SIMULATOR)
+    target_include_directories(lvgl PUBLIC ${SDL2_INCLUDE_DIRS})
+    find_package(Threads REQUIRED)
+    target_link_libraries(main lvgl SDL2::SDL2 Threads::Threads)
+else()
+    target_link_libraries(main lvgl lvgl::examples lvgl::demos lvgl::thorvg ${Libdrm_LIBRARIES} m pthread)
+endif()
 add_custom_target (run COMMAND ${OUTPUT_PATH}/main DEPENDS main)
 
 # 以下内容用于复制配置文件
@@ -85,31 +105,33 @@ add_custom_command(
     COMMENT "Copying cacert.pem to bin directory"
 )
 
-# 引用AIChat_demo中的库
-set(AI_CHAT_CLIENT_PATH "${PROJECT_SOURCE_DIR}/../AIChat_demo/Client" CACHE PATH "Path to AIChat_demo Client")
-add_subdirectory(${AI_CHAT_CLIENT_PATH} ${CMAKE_BINARY_DIR}/AIChat_build)
-target_link_libraries(main AIchat-c-interface AIChatCore)
+if(NOT TARGET_SIMULATOR)
+    # 引用AIChat_demo中的库
+    set(AI_CHAT_CLIENT_PATH "${PROJECT_SOURCE_DIR}/../AIChat_demo/Client" CACHE PATH "Path to AIChat_demo Client")
+    add_subdirectory(${AI_CHAT_CLIENT_PATH} ${CMAKE_BINARY_DIR}/AIChat_build)
+    target_link_libraries(main AIchat-c-interface AIChatCore)
 
-# 复制AIchat所需文件
-add_custom_command(
-    TARGET main POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${OUTPUT_PATH}/third_party/snowboy/resources
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${OUTPUT_PATH}/third_party/snowboy/resources/models
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${OUTPUT_PATH}/third_party/audio
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${AI_CHAT_CLIENT_PATH}/third_party/snowboy/resources/common.res
-            ${OUTPUT_PATH}/third_party/snowboy/resources/common.res
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${AI_CHAT_CLIENT_PATH}/third_party/snowboy/resources/models/echo.pmdl
-            ${OUTPUT_PATH}/third_party/snowboy/resources/models/echo.pmdl
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${AI_CHAT_CLIENT_PATH}/third_party/audio/waked.pcm
-            ${OUTPUT_PATH}/third_party/audio/waked.pcm
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${AI_CHAT_CLIENT_PATH}/third_party/audio/muyu_knock.wav
-            ${OUTPUT_PATH}/third_party/audio/muyu_knock.wav
-    COMMENT "Copying AI Chat necessary resource files to executable output directory"
-)
+    # 复制AIchat所需文件
+    add_custom_command(
+        TARGET main POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${OUTPUT_PATH}/third_party/snowboy/resources
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${OUTPUT_PATH}/third_party/snowboy/resources/models
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${OUTPUT_PATH}/third_party/audio
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                ${AI_CHAT_CLIENT_PATH}/third_party/snowboy/resources/common.res
+                ${OUTPUT_PATH}/third_party/snowboy/resources/common.res
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                ${AI_CHAT_CLIENT_PATH}/third_party/snowboy/resources/models/echo.pmdl
+                ${OUTPUT_PATH}/third_party/snowboy/resources/models/echo.pmdl
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                ${AI_CHAT_CLIENT_PATH}/third_party/audio/waked.pcm
+                ${OUTPUT_PATH}/third_party/audio/waked.pcm
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                ${AI_CHAT_CLIENT_PATH}/third_party/audio/muyu_knock.wav
+                ${OUTPUT_PATH}/third_party/audio/muyu_knock.wav
+        COMMENT "Copying AI Chat necessary resource files to executable output directory"
+    )
+endif()
 
 if(TARGET_ARM)
     # AI (yolo) camera

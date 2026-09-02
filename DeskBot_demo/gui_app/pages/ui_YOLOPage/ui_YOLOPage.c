@@ -50,8 +50,9 @@ static void _ai_camera_deinit()
 }
 #endif
 
-static void timer_flash()
+static void timer_flash(lv_timer_t * timer)
 {
+    (void)timer;
 #if LV_USE_SIMULATOR == 0
     if(_first_into)
     {

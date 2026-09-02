@@ -129,8 +129,8 @@ static void ui_event_width_btn(lv_event_t * e)
             ui_Draw_para.line_width = 2;
         }
         lv_obj_t * width_btn = lv_event_get_target(e);
-        lv_obj_t * width_btn_label = lv_obj_get_child(width_btn, NULL);
-        char * width_str[5];
+        lv_obj_t * width_btn_label = lv_obj_get_child(width_btn, 0);
+        char width_str[16];
         sprintf(width_str, "W: %d", ui_Draw_para.line_width);
         lv_label_set_text(width_btn_label, width_str);
     }
@@ -186,7 +186,7 @@ void ui_DrawPage_init()
     lv_obj_set_size(width_btn, 60, 40);
     lv_obj_set_style_bg_color(width_btn, lv_palette_main(LV_PALETTE_CYAN), 0);
     lv_obj_t * width_btn_label = lv_label_create(width_btn);
-    char * width_str[5];
+    char width_str[16];
     sprintf(width_str, "W: %d", ui_Draw_para.line_width);
     lv_label_set_text(width_btn_label, width_str);
     lv_obj_align(width_btn_label, LV_ALIGN_CENTER, 0, 0);

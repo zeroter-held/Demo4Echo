@@ -5,6 +5,8 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
+
 extern uint8_t chat_bot_move_dir;
 
 // 创建并初始化Application对象, 会开启一个线程

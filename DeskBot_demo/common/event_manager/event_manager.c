@@ -1,6 +1,7 @@
 #include "event_manager.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 // 初始化事件管理器和事件队列
 void event_manager_init(EventManager *manager, size_t queue_capacity) {

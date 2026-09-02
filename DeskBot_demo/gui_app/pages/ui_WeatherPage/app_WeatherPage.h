@@ -8,8 +8,6 @@ extern "C" {
 #include "ui_WeatherPage.h"
 #include <stdint.h>
 #include <stddef.h>
-#include <curl/curl.h>
-#include <json-c/json.h>
 
 typedef struct {
     char weather[32];

@@ -57,8 +57,9 @@ static void ui_home_timer_cb(lv_timer_t * timer)
 
 ///////////////////// ANIMATIONS ////////////////////
 
-static void _ui_anim_completed_cb()
+static void _ui_anim_completed_cb(lv_anim_t * animation)
 {
+    (void)animation;
     ui_desktop_data.scroll_busy = false;
 }
 
@@ -767,6 +768,7 @@ void ui_HomePage_init(void)
     lv_obj_set_style_border_width(ui_tomato_body, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_align(ui_tomato_body, LV_ALIGN_CENTER, 0, 4);
     lv_obj_remove_flag(ui_tomato_body, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_flag(ui_tomato_body, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     lv_obj_t * ui_tomato_stem = lv_obj_create(ui_FocusBtn);
     lv_obj_set_size(ui_tomato_stem, 8, 10);
@@ -776,6 +778,7 @@ void ui_HomePage_init(void)
     lv_obj_set_style_border_width(ui_tomato_stem, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_align(ui_tomato_stem, LV_ALIGN_CENTER, 0, -16);
     lv_obj_remove_flag(ui_tomato_stem, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_flag(ui_tomato_stem, LV_OBJ_FLAG_EVENT_BUBBLE);
     // event
     lv_obj_add_event_cb(ui_FocusBtn, ui_event_AppsBtn, LV_EVENT_CLICKED, "FocusPage");
 

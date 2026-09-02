@@ -23,3 +23,6 @@ Makefile
 # Runtime output assembled for the development board
 DeskBot_demo/bin/
 
+# Windows LVGL simulator outputs
+DeskBot_demo/bin-sim/
+DeskBot_demo/build-sim*/

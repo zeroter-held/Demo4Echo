@@ -1,6 +1,11 @@
 #include "lvgl/lvgl.h"
 #include "lvgl/demos/lv_demos.h"
+#if LV_USE_SIMULATOR
+#define SDL_MAIN_HANDLED
+#include <SDL2/SDL.h>
+#else
 #include <unistd.h>
+#endif
 #include <pthread.h>
 #include <time.h>
 #include <stdio.h>
@@ -72,7 +77,11 @@ int main(void)
     /*Handle LVGL tasks*/
     while(1) {
         lv_timer_handler();
+#if LV_USE_SIMULATOR
+        SDL_Delay(1);
+#else
         usleep(1000);
+#endif
     }
 
     return 0;

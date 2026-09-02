@@ -23,7 +23,7 @@ static void Stack_Clear(Stack_T* stack);
 typedef struct {
     uint16_t score;
     uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE];
-    char    * btnm_map[MATRIX_SIZE * MATRIX_SIZE + MATRIX_SIZE];
+    const char * btnm_map[MATRIX_SIZE * MATRIX_SIZE + MATRIX_SIZE];
     uint8_t     game_over;
 } ui_Game2048_t;
 
@@ -43,11 +43,11 @@ typedef struct {
 #define GAME_2048_NUMBER_1024_COLOR     lv_color_hex(0x8FC1B5)
 #define GAME_2048_NUMBER_2048_COLOR     lv_color_hex(0x8FD1B5)
 
-static char *Str2048Nums[]={"2","4","8","16","32","64","128","256","512","1024","2048"};
+static const char *Str2048Nums[]={"2","4","8","16","32","64","128","256","512","1024","2048"};
 
 static void Game_2048_init(void);
 static void init_matrix_num(uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE]);
-static void update_btnm_map(char * btnm_map[], uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE]);
+static void update_btnm_map(const char * btnm_map[], uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE]);
 static void addRandom(uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE]);
 static uint8_t move_up(uint16_t * score, uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE]);
 static uint8_t move_down(uint16_t * score, uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE]);
@@ -95,7 +95,7 @@ static void ui_event_Game2048Page(lv_event_t * e)
             {
                 addRandom(Game_2048.matrix);
                 update_btnm_map(Game_2048.btnm_map, Game_2048.matrix);
-                lv_btnmatrix_set_map(ui_Game2048BtnM, Game_2048.btnm_map);
+                lv_btnmatrix_set_map(ui_Game2048BtnM, (const char * const *)Game_2048.btnm_map);
                 uint8_t strbuf[11];
                 sprintf(strbuf,"Sc: %4d",Game_2048.score);
                 lv_label_set_text(ui_Game2048ScLabel,strbuf);
@@ -229,7 +229,7 @@ static void Game_2048_init(void)
     Game_2048.score = 0;
     Game_2048.game_over = 0;
 
-    memset(Game_2048.btnm_map,0,MATRIX_SIZE * MATRIX_SIZE + MATRIX_SIZE);
+    memset(Game_2048.btnm_map,0,sizeof(Game_2048.btnm_map));
 
     Game_2048.btnm_map[4]="\n";
     Game_2048.btnm_map[9]="\n";
@@ -238,7 +238,7 @@ static void Game_2048_init(void)
 
     init_matrix_num(Game_2048.matrix);
     update_btnm_map(Game_2048.btnm_map, Game_2048.matrix);
-    lv_btnmatrix_set_map(ui_Game2048BtnM, Game_2048.btnm_map);
+    lv_btnmatrix_set_map(ui_Game2048BtnM, (const char * const *)Game_2048.btnm_map);
 
 }
 
@@ -257,7 +257,7 @@ static void init_matrix_num(uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE])
     addRandom(matrix);
 }
 
-static void update_btnm_map(char * btnm_map[], uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE])
+static void update_btnm_map(const char * btnm_map[], uint16_t matrix[MATRIX_SIZE][MATRIX_SIZE])
 {
     uint8_t x, y, index;
     index = 0;
@@ -572,7 +572,7 @@ static uint8_t Stack_Pop(Stack_T* stack)
   if(stack->Top_Point == 0)
     {return -1;}
 
-    stack->Data[stack->Top_Point--] = NULL;
+    stack->Data[stack->Top_Point--] = 0;
     return 0;
 }
 
